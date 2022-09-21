@@ -8,6 +8,7 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
 
 import { AppRoutingModule } from './app-routing.module';
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularMaterialModule } from './angular-material.module';
 
 import { CitiesComponent } from './cities/cities.component';
@@ -24,6 +25,7 @@ import { CitiesComponent } from './cities/cities.component';
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
+    BrowserAnimationsModule,
     AngularMaterialModule
   ],
   providers: [],
