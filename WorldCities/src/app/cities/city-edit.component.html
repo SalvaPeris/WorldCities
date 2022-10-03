@@ -1,29 +1,54 @@
 <div class="city-edit">
   <h1>{{title}}</h1>
-  <p *ngIf="!city"><em>Cargando...</em></p>
+  <p *ngIf="this.id && !city"><em>Cargando...</em></p>
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <!-- Name -->
     <mat-form-field>
       <mat-label>Nombre:</mat-label>
       <input matInput formControlName="name" required
              placeholder="Nombre de la ciudad">
+      <mat-error *ngIf="this.form.controls['name'].errors?.['required']">
+        El nombre es requerido.
+      </mat-error>
     </mat-form-field>
+
     <!-- Lat -->
     <mat-form-field>
       <mat-label>Latitud:</mat-label>
       <input matInput formControlName="lat" required
              placeholder="Insertar latitud">
+      <mat-error *ngIf="this.form.controls['lat'].errors?.['required']">
+        La latitud es requerida.
+      </mat-error>
     </mat-form-field>
+    
     <!-- Lon -->
     <mat-form-field>
       <mat-label>Longitud:</mat-label>
       <input matInput formControlName="lon" required
              placeholder="Insertar longitud">
+      <mat-error *ngIf="this.form.controls['lon'].errors?.['required']">
+        La longitud es requerida.
+      </mat-error>
     </mat-form-field>
+
+    <!-- Countries-->
+    <mat-form-field *ngIf="countries">
+      <mat-label>Selecciona un país...</mat-label>
+      <mat-select id="countryId" formControlName="countryId">
+        <mat-option *ngFor="let country of countries" [value]="country.id">
+          {{ country.name }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="this.form.controls['countryId'].errors?.['required']">
+        Por favor, selecciona un país.
+      </mat-error>
+    </mat-form-field>
+
     <div>
       <button mat-flat-button color="primary"
-              type="submit">
-        Guardar
+              type="submit" [disabled]="!form.valid">
+        {{ this.id ? "Guardar" : "Crear" }}
       </button>
       <button mat-flat-button color="secondary"
               [routerLink]="['/cities']">
