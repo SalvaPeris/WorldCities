@@ -21,7 +21,7 @@
         La latitud es requerida.
       </mat-error>
     </mat-form-field>
-    
+
     <!-- Lon -->
     <mat-form-field>
       <mat-label>Longitud:</mat-label>
@@ -44,6 +44,13 @@
         Por favor, selecciona un país.
       </mat-error>
     </mat-form-field>
+
+    <p>
+      <mat-error *ngIf="form.invalid && form.hasError('isDupeCity')">
+        <strong>ERROR</strong>:
+       Ya existe una ciudad con las mismas características.
+      </mat-error>
+    </p>
 
     <div>
       <button mat-flat-button color="primary"

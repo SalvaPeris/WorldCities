@@ -5,6 +5,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+
 import { City } from './city';
 
 @Component({
@@ -26,6 +29,8 @@ export class CitiesComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+
+  filterTextChanged: Subject<string> = new Subject<string>();
 
   constructor(private http: HttpClient) { }
 
@@ -62,5 +67,17 @@ export class CitiesComponent implements OnInit {
         this.paginator.pageSize = result.pageSize;
         this.cities = new MatTableDataSource<City>(result.data);
       }, error => console.error(error));
+  }
+
+  // DEBOUNCE METHOD 
+  onFilterTextChanged(filterText: string) {
+    if (this.filterTextChanged.observers.length === 0) {
+      this.filterTextChanged
+        .pipe(debounceTime(1000), distinctUntilChanged())
+        .subscribe(query => {
+          this.loadData(query);
+        });
+    }
+    this.filterTextChanged.next(filterText);
   }
 }

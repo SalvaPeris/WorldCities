@@ -16,6 +16,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CitiesComponent } from './cities/cities.component';
 import { CountriesComponent } from './countries/countries.component';
 import { CityEditComponent } from './cities/city-edit.component';
+import { CountryEditComponent } from './countries/country-edit.component';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { CityEditComponent } from './cities/city-edit.component';
     NavMenuComponent,
     CitiesComponent,
     CountriesComponent,
-    CityEditComponent
+    CityEditComponent,
+    CountryEditComponent
   ],
   imports: [
     BrowserModule,
