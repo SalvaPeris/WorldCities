@@ -1,9 +1,10 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { environment } from '../../environments/environment.prod';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { MatDialog } from '@angular/material/dialog';
 
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -26,13 +27,16 @@ export class CitiesComponent implements OnInit {
   public defaultSortOrder: "asc" | "desc" = "asc";
   defaultFilterColumn: string = "name";
   filterQuery?: string;
+  defaultCount: number = 24;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
+  @ViewChild('firstDialog') firstDialog!: TemplateRef<any>;
+
   filterTextChanged: Subject<string> = new Subject<string>();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private dialog: MatDialog) { }
 
   ngOnInit() {
     this.loadData();
@@ -63,6 +67,7 @@ export class CitiesComponent implements OnInit {
     this.http.get<any>(url, { params })
       .subscribe(result => {
         this.paginator.length = result.totalCount;
+        this.defaultCount = result.totalCount;
         this.paginator.pageIndex = result.pageIndex;
         this.paginator.pageSize = result.pageSize;
         this.cities = new MatTableDataSource<City>(result.data);
@@ -79,5 +84,9 @@ export class CitiesComponent implements OnInit {
         });
     }
     this.filterTextChanged.next(filterText);
+  }
+
+  openDialog() {
+    this.dialog.open(this.firstDialog);
   }
 }
