@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using WorldCitiesAPI.Data.Models;
 
 namespace WorldCitiesAPI.Data
@@ -12,6 +13,16 @@ namespace WorldCitiesAPI.Data
         : base(options)
         {
         }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if(!optionsBuilder.IsConfigured)
+            {
+                var connectionString = "server=82.223.101.36;database=WorldCities;user=wc; password=worldcities";
+                optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+            }
+        }
+
         public DbSet<City> Cities => Set<City>();
         public DbSet<Country> Countries => Set<Country>();
     }
