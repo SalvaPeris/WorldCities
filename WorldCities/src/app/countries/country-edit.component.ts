@@ -7,6 +7,7 @@ import { map } from 'rxjs/operators';
 
 import { environment } from './../../environments/environment';
 import { Country } from './country';
+import { BaseFormComponent } from '../base-form.component';
 
 @Component({
   selector: 'app-country-edit',
@@ -14,7 +15,7 @@ import { Country } from './country';
   styleUrls: ['./country-edit.component.scss']
 })
 
-export class CountryEditComponent implements OnInit {
+export class CountryEditComponent extends BaseFormComponent implements OnInit {
 
   // the view title
   title?: string;
@@ -38,7 +39,10 @@ export class CountryEditComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private http: HttpClient
-  ) { }
+  ) {
+
+    super();
+  }
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -76,7 +80,7 @@ export class CountryEditComponent implements OnInit {
       }, error => console.error(error));
     }
     else {
-      this.title = "Create a new Country";
+      this.title = "Crear nuevo pais";
     }
   }
 

@@ -9,7 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { City } from './city';
 import { Country } from './../countries/country';
-
+import { BaseFormComponent } from '../base-form.component';
 
 @Component({
   selector: 'app-city-edit',
@@ -17,7 +17,7 @@ import { Country } from './../countries/country';
   styleUrls: ['./city-edit.component.scss']
 })
 
-export class CityEditComponent implements OnInit {
+export class CityEditComponent extends BaseFormComponent implements OnInit {
 
   //The view Title
   title?: string;
@@ -39,13 +39,24 @@ export class CityEditComponent implements OnInit {
     private router: Router,
     private http: HttpClient
   )
-  { }
+  {
+    super();
+  }
 
   ngOnInit() {
     this.form = new FormGroup({
-      name: new FormControl('', Validators.required),
-      lat: new FormControl('', Validators.required),
-      lon: new FormControl('', Validators.required),
+      name: new FormControl('', [
+        Validators.required,
+        Validators.pattern(/^[a-zA-Z]/)
+      ]),
+      lat: new FormControl('', [
+        Validators.required,
+        Validators.pattern(/^[1-9]$/)
+      ]),
+      lon: new FormControl('', [
+        Validators.required,
+        Validators.pattern(/^[1-9]$/)
+      ]),
       countryId: new FormControl('', Validators.required)
     }, null, this.isDupeCity());
 

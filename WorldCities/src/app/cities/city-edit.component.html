@@ -7,8 +7,8 @@
       <mat-label>Nombre:</mat-label>
       <input matInput formControlName="name" required
              placeholder="Nombre de la ciudad">
-      <mat-error *ngIf="this.form.controls['name'].errors?.['required']">
-        El nombre es requerido.
+      <mat-error *ngFor="let error of getErrors(form.get('name')!,'Nombre')">
+        {{error}}
       </mat-error>
     </mat-form-field>
 
@@ -17,8 +17,8 @@
       <mat-label>Latitud:</mat-label>
       <input matInput formControlName="lat" required
              placeholder="Insertar latitud">
-      <mat-error *ngIf="this.form.controls['lat'].errors?.['required']">
-        La latitud es requerida.
+      <mat-error *ngFor="let error of getErrors(form.get('lat')!,'Latitud')">
+        {{error}}
       </mat-error>
     </mat-form-field>
 
@@ -27,8 +27,8 @@
       <mat-label>Longitud:</mat-label>
       <input matInput formControlName="lon" required
              placeholder="Insertar longitud">
-      <mat-error *ngIf="this.form.controls['lon'].errors?.['required']">
-        La longitud es requerida.
+      <mat-error *ngFor="let error of getErrors(form.get('lon')!,'Longitud')">
+        {{error}}
       </mat-error>
     </mat-form-field>
 
