@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -17,9 +17,12 @@ import { CitiesComponent } from './cities/cities.component';
 import { CountriesComponent } from './countries/countries.component';
 import { CityEditComponent } from './cities/city-edit.component';
 import { CountryEditComponent } from './countries/country-edit.component';
+import { LoginComponent } from './auth/login.component';
 
 import { CityService } from './cities/city.service';
 import { CountryService } from './countries/countryService';
+import { AuthService } from './auth/auth.service';
+import { AuthInterceptor } from './auth/auth.interceptor';
 
 
 @NgModule({
@@ -30,7 +33,8 @@ import { CountryService } from './countries/countryService';
     CitiesComponent,
     CountriesComponent,
     CityEditComponent,
-    CountryEditComponent
+    CountryEditComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -42,7 +46,12 @@ import { CountryService } from './countries/countryService';
   ],
   providers: [
     CityService,
-    CountryService
+    CountryService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

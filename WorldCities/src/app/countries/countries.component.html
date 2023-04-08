@@ -3,7 +3,7 @@
 
 <p *ngIf="!countries"><em>Cargando...</em></p>
 
-<button mat-flat-button color="primary"
+<button mat-flat-button color="primary" *ngIf="this.authService.isAuthenticated()"
         class="btn-add" [routerLink]="['/country']">
   Añadir nuevo país
 </button>

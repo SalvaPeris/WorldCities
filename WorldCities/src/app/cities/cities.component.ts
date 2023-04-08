@@ -1,5 +1,4 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { environment } from '../../environments/environment.prod';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -12,6 +11,7 @@ import { CityService } from './city.service';
 import { ApiResult } from '../base.service';
 
 import { City } from './city';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-cities',
@@ -38,7 +38,7 @@ export class CitiesComponent implements OnInit {
 
   filterTextChanged: Subject<string> = new Subject<string>();
 
-  constructor(private cityService: CityService, private dialog: MatDialog) { }
+  constructor(private cityService: CityService, private dialog: MatDialog, protected authService: AuthService) { }
 
   ngOnInit() {
     this.loadData();

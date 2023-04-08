@@ -4,7 +4,8 @@
 <p *ngIf="!cities"><em>Cargando...</em></p>
 
 <div>
-  <button mat-flat-button color="primary" class="btn-add" *ngIf="cities" [routerLink]="['/city']">Añadir nueva ciudad</button>
+  <button mat-flat-button color="primary" class="btn-add" *ngIf="this.authService.isAuthenticated()"
+          [routerLink]="['/city']">Añadir nueva ciudad</button>
   <button mat-flat-button color="primary" class="btn-add text-right" (click)="openDialog()">Total ciudades</button>
 </div>
 
