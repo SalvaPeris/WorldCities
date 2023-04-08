@@ -28,16 +28,22 @@
     </td>
   </ng-container>
 
-  <!-- Lat -->
+  <!-- Iso2 -->
   <ng-container matColumnDef="iso2">
     <th mat-header-cell *matHeaderCellDef mat-sort-header>ISO 2</th>
     <td mat-cell *matCellDef="let country">{{ country.iso2 }}</td>
   </ng-container>
 
-  <!-- Lon -->
+  <!-- Iso3 -->
   <ng-container matColumnDef="iso3">
     <th mat-header-cell *matHeaderCellDef mat-sort-header>ISO 3</th>
     <td mat-cell *matCellDef="let country">{{ country.iso3 }}</td>
+  </ng-container>
+
+  <!-- TotCities -->
+  <ng-container matColumnDef="totCities">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Total cities</th>
+    <td mat-cell *matCellDef="let country">{{ country.totCities }}</td>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

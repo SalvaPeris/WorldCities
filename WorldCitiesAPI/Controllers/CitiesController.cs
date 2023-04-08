@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WorldCitiesAPI.Data;
+using WorldCitiesAPI.Data.DTO;
 using WorldCitiesAPI.Data.Models;
 
 namespace WorldCitiesAPI.Controllers
@@ -23,7 +24,7 @@ namespace WorldCitiesAPI.Controllers
 
         // GET: api/Cities
         [HttpGet]
-        public async Task<ActionResult<ApiResult<City>>> GetCities(int pageIndex = 0, int pageSize = 10, string? sortColumn = null, string? sortOrder = null, string? filterColumn = null, string? filterQuery = null)
+        public async Task<ActionResult<ApiResult<CityDTO>>> GetCities(int pageIndex = 0, int pageSize = 10, string? sortColumn = null, string? sortOrder = null, string? filterColumn = null, string? filterQuery = null)
         {
             IQueryable<City> cities = _context.Cities;
 
@@ -32,8 +33,17 @@ namespace WorldCitiesAPI.Controllers
                 cities = cities.Where(c => c.Name.StartsWith(filterQuery));
             }
 
-            return await ApiResult<City>.CreateAsync(
-                 cities,
+            return await ApiResult<CityDTO>.CreateAsync(
+				 _context.Cities.AsNoTracking()
+						.Select(c => new CityDTO()
+						{
+							Id = c.Id,
+							Name = c.Name,
+							Lat = c.Lat,
+							Lon = c.Lon,
+							CountryId = c.Country!.Id,
+							CountryName = c.Country!.Name
+						}),
                  pageIndex,
                  pageSize,
                  sortColumn,

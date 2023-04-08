@@ -30,8 +30,8 @@ builder.Services.AddSwaggerGen();
 #region "BASE DE DATOS - MYSQL"
 builder.Services.AddEntityFrameworkMySql().AddDbContext<ApplicationDbContext>(options =>
     {
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionMYSQL");
-        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+		var connectionString = "server=82.223.101.36;database=WorldCities;user=wc; password=worldcities";
+		options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
     });
 #endregion
 
