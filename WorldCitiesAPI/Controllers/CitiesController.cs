@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -99,9 +100,9 @@ namespace WorldCitiesAPI.Controllers
         }
 
         // POST: api/Cities
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<City>> PostCity(City city)
+		[Authorize(Roles = "RegisteredUser")]
+		public async Task<ActionResult<City>> PostCity(City city)
         {
             _context.Cities.Add(city);
             await _context.SaveChangesAsync();
@@ -111,7 +112,8 @@ namespace WorldCitiesAPI.Controllers
 
         // DELETE: api/Cities/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCity(int id)
+		[Authorize(Roles = "Administrator")]
+		public async Task<IActionResult> DeleteCity(int id)
         {
             var city = await _context.Cities.FindAsync(id);
             if (city == null)

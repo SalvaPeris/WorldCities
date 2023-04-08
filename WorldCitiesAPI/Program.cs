@@ -1,6 +1,10 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Configuration;
 using WorldCitiesAPI.Data;
+using WorldCitiesAPI.Data.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +39,44 @@ builder.Services.AddEntityFrameworkMySql().AddDbContext<ApplicationDbContext>(op
     });
 #endregion
 
+
+#region ASP NET Core Identity
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+	options.SignIn.RequireConfirmedAccount = true;
+	options.Password.RequireDigit = true;
+	options.Password.RequireLowercase = true;
+	options.Password.RequireUppercase = true;
+	options.Password.RequireNonAlphanumeric = true;
+	options.Password.RequiredLength = 8;
+})
+	.AddEntityFrameworkStores<ApplicationDbContext>();
+#endregion
+
+#region Authentication services and middlewares
+builder.Services.AddAuthentication(opt =>
+{
+	opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+	opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+	options.TokenValidationParameters = new TokenValidationParameters
+	{
+		RequireExpirationTime = true,
+		ValidateIssuer = true,
+		ValidateAudience = true,
+		ValidateLifetime = true,
+		ValidateIssuerSigningKey = true,
+		ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+		ValidAudience = builder.Configuration["JwtSettings:Audience"],
+		IssuerSigningKey = new SymmetricSecurityKey(
+			System.Text.Encoding.UTF8.GetBytes(
+				builder.Configuration["JwtSettings:SecurityKey"]))
+	};
+});
+#endregion
+
+
 builder.Services.AddCors(
    options =>
    {
@@ -53,6 +95,7 @@ builder.Services.AddCors(
           });
    });
 
+builder.Services.AddScoped<JwtHandler>();
 
 var app = builder.Build();
 
@@ -70,6 +113,7 @@ else
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
