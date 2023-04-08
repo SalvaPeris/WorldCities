@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { FormGroup, FormControl, Validators, AbstractControl, AsyncValidatorFn } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { environment } from '../../environments/environment';
@@ -18,7 +18,7 @@ import { CityService } from './city.service';
   styleUrls: ['./city-edit.component.scss']
 })
 
-export class CityEditComponent extends BaseFormComponent implements OnInit {
+export class CityEditComponent extends BaseFormComponent implements OnInit, OnDestroy {
 
   //The view Title
   title?: string;
@@ -33,7 +33,12 @@ export class CityEditComponent extends BaseFormComponent implements OnInit {
   id?: number;
 
   //Countries array
-  countries?: Country[];
+  countries?: Observable<Country[]>;
+
+  // Activity Log (for debugging purposes)
+  activityLog: string = '';
+
+  private destroySubject = new Subject();
 
   constructor(
     private activatedRouter: ActivatedRoute,
@@ -61,7 +66,36 @@ export class CityEditComponent extends BaseFormComponent implements OnInit {
       countryId: new FormControl('', Validators.required)
     }, null, this.isDupeCity());
 
+    this.form.valueChanges
+      .pipe(takeUntil(this.destroySubject))
+      .subscribe(() => {
+        if (!this.form.dirty) {
+          this.log("Form Model has been loaded.");
+        }
+        else {
+          this.log("Form was updated by the user.");
+        }
+      });
+
+    // react to changes in the form.name control
+    this.form.get("name")!.valueChanges
+      .pipe(takeUntil(this.destroySubject))
+      .subscribe(() => {
+        if (!this.form.dirty) {
+          this.log("Name has been loaded with initial values.");
+        }
+        else {
+          this.log("Name was updated by the user.");
+        }
+      });
+
     this.loadData();
+  }
+
+  log(str: string) {
+    this.activityLog += "["
+      + new Date().toLocaleString()
+      + "] " + str + "<br />";
   }
 
   loadData() {
@@ -97,9 +131,7 @@ export class CityEditComponent extends BaseFormComponent implements OnInit {
       "asc",
       null,
       null,
-    ).subscribe(result => {
-      this.countries = result.data;
-    }, error => console.error(error));
+    ).pipe(map(x => x.data));
   }
 
   isDupeCity(): AsyncValidatorFn {
@@ -153,5 +185,12 @@ export class CityEditComponent extends BaseFormComponent implements OnInit {
           }, error => console.error(error));
       }
     }
+  }
+
+  ngOnDestroy() {
+    // emit a value with the takeUntil notifier
+    this.destroySubject.next(true);
+    // complete the subject
+    this.destroySubject.complete();
   }
 }
