@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Configuration;
 using WorldCitiesAPI.Data;
+using WorldCitiesAPI.Data.GraphQL;
 using WorldCitiesAPI.Data.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -97,6 +98,13 @@ builder.Services.AddCors(
 
 builder.Services.AddScoped<JwtHandler>();
 
+builder.Services.AddGraphQLServer()
+	.AddAuthorization()
+	.AddQueryType<Query>()
+	.AddMutationType<Mutation>()
+	.AddFiltering()
+	.AddSorting();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -117,5 +125,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapGraphQL("/api/graphql");
 
 app.Run();
