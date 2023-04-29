@@ -18,14 +18,14 @@ export class HealthCheckService {
   constructor(private http: HttpClient) {
   }
 
-  public startConnection() {
+  public async startConnection() {
     this.hubConnection = new signalR.HubConnectionBuilder()
       .configureLogging(signalR.LogLevel.Information)
       .withUrl(environment.baseUrl + 'api/health-hub', { withCredentials: false })
       .build();
 
     console.log("Starting connection...");
-    this.hubConnection
+    await this.hubConnection
       .start()
       .then(() => console.log("Connection started."))
       .catch((err: any) => console.log(err));

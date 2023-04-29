@@ -12,7 +12,7 @@ import { HealthCheckService } from './healthcheck.service';
 })
 export class HealthCheckComponent implements OnInit {
 
-  public result: Observable<Result>;
+  public result: Observable<Result | null>;
 
   constructor(private service: HealthCheckService) {
     this.result = this.service.result;

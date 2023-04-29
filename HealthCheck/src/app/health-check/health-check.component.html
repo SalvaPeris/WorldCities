@@ -2,9 +2,9 @@
 
 <p>Here are the results of our health check:</p>
 
-<p *ngIf="!result"><em>Loading...</em></p>
+<p *ngIf="!(result | async)"><em>Loading...</em></p>
 
-<table *ngIf="result">
+<table *ngIf="result | async as res">
   <thead>
     <tr>
       <th>Name</th>
@@ -14,7 +14,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let check of result.checks">
+    <tr *ngFor="let check of res.checks">
       <td>{{ check.name }}</td>
       <td>{{ check.responseTime }}</td>
       <td class="status {{ check.status }}">{{ check.status }}</td>
