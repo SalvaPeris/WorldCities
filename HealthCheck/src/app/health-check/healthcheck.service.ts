@@ -12,8 +12,9 @@ import { Observable, Subject, tap } from 'rxjs';
 export class HealthCheckService {
 
   private hubConnection!: signalR.HubConnection;
-  private _result: Subject<Result> = new Subject<Result>();
-  public result = this._result.asObservable();
+  private _results: Subject<Result[]> = new Subject<Result[]>();
+  private _arrayResults: Result[] = [];
+  public results = this._results.asObservable();
 
   constructor(private http: HttpClient) {
   }
@@ -48,9 +49,11 @@ export class HealthCheckService {
   public updateData() {
     console.log("Fetching data...");
     this.http.get<Result>(environment.baseUrl + 'api/health')
-      .subscribe(result => {
-        this._result.next(result);
-        console.log(result);
+      .subscribe(r => {
+        //this._result.next(result);
+        this._arrayResults.push(r);
+        this._results.next(this._arrayResults);
+        console.log(r);
       });
   }
 

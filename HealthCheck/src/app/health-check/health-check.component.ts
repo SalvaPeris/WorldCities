@@ -12,10 +12,10 @@ import { HealthCheckService } from './healthcheck.service';
 })
 export class HealthCheckComponent implements OnInit {
 
-  public result: Observable<Result | null>;
+  public results: Observable<Result[]>;
 
   constructor(private service: HealthCheckService) {
-    this.result = this.service.result;
+    this.results = this.service.results;
   }
 
   ngOnInit() {

@@ -2,9 +2,8 @@
 
 <p>Here are the results of our health check:</p>
 
-<p *ngIf="!(result | async)"><em>Loading...</em></p>
-
-<table *ngIf="result | async as res">
+<p *ngIf="!(results | async)"><em>Loading...</em></p>
+<table *ngIf="results | async as res">
   <thead>
     <tr>
       <th>Name</th>
@@ -14,12 +13,14 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let check of res.checks">
-      <td>{{ check.name }}</td>
-      <td>{{ check.responseTime }}</td>
-      <td class="status {{ check.status }}">{{ check.status }}</td>
-      <td>{{ check.description }}</td>
-    </tr>
+    <ng-container *ngFor="let result of res">
+      <tr *ngFor="let check of result.checks"> 
+        <td>{{ check.name }}</td>
+      <td *ngFor="let check of result.checks">{{ check.responseTime }}</td>
+        <td class="status {{ check.status }}">{{ check.status }}</td>
+        <td>{{ check.description }}</td>
+      </tr>
+    </ng-container>
   </tbody>
 </table>
 <button (click)="onRefresh()">Refresh</button>
