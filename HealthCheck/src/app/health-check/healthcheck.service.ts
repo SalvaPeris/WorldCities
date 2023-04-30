@@ -22,7 +22,8 @@ export class HealthCheckService {
   public async startConnection() {
     this.hubConnection = new signalR.HubConnectionBuilder()
       .configureLogging(signalR.LogLevel.Information)
-      .withUrl(environment.baseUrl + 'api/health-hub', { withCredentials: false })
+      //.withUrl(environment.baseUrl + 'api/health-hub', { withCredentials: false })
+      .withUrl(environment.baseUrl + 'loghub', { withCredentials: false })
       .build();
 
     console.log("Starting connection...");
@@ -31,10 +32,17 @@ export class HealthCheckService {
       .then(() => console.log("Connection started."))
       .catch((err: any) => console.log(err));
 
+    this.hubConnection.send("JoinGroup", "LogMonitor").then(()=> console.log("join LogMonitor"));
+
     this.updateData();
   }
 
   public addDataListeners() {
+    this.hubConnection.on('Broadcast', (msg) => {
+      console.log("Logs: " + msg);
+      this.updateData();
+    });
+
     this.hubConnection.on('Update', (msg) => {
       console.log("Update issued by server for the following reason: " + msg);
       this.updateData();

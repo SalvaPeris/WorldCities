@@ -1,6 +1,5 @@
 global using HealthCheckAPI;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Cors;
+using IVilson.Utils.Logger.SignalR;
 using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +30,9 @@ builder.Services.AddSignalR();
 
 var app = builder.Build();
 
+app.Services.AddSignalRLogger();
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -53,6 +55,9 @@ app.MapMethods("/api/heartbeat", new[] { "HEAD" },
     () => Results.Ok());
 
 app.MapHub<HealthCheckHub>("/api/health-hub");
+
+app.MapHub<SignalRLoggerHub>(SignalRLoggerHub.HubUrl);
+
 
 app.MapGet("/api/broadcast/update2", async (IHubContext<HealthCheckHub> hub) =>
 {
